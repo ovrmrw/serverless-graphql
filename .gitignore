@@ -40,3 +40,4 @@ jspm_packages
 .dest*
 dest*
 secret.json
+.serverless
