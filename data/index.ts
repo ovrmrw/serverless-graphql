@@ -4,6 +4,7 @@ import { schema, schema2 } from './schema';
 import { resolverMap, resolverMap2 } from './resolvers';
 
 export { createLoaders } from './loaders';
+export { Context } from './types';
 
 
 export const executableSchema = makeExecutableSchema({
@@ -14,4 +15,5 @@ export const executableSchema = makeExecutableSchema({
 export const executableSchema2 = makeExecutableSchema({
   typeDefs: schema2,
   resolvers: resolverMap2,
+  
 });

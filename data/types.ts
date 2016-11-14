@@ -13,3 +13,8 @@ export interface Loaders {
   userLoader: DataLoaderType<string, User>;
   hobbyLoader: DataLoaderType<string, Hobby>;
 }
+
+
+export interface Context {
+  loaders: Loaders;
+}

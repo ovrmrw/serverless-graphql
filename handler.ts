@@ -1,19 +1,78 @@
-'use strict';
+import 'core-js';
+import { graphql } from 'graphql';
 
-const hello = (event, context, callback) => {
-  const response = {
-    statusCode: 200,
-    body: JSON.stringify({
-      message: 'Go Serverless v1.0! Your function executed successfully!',
-      input: event,
-    }),
+import { firebaseApp } from './firebase-initializer';
+import { executableSchema, executableSchema2, createLoaders, Context } from './data';
+
+
+
+const graphqlFn = (event, context, callback): void => {
+  const query: string = (event.body && event.body.query) ? event.body.query : `
+    {
+      user(id:1) {
+        id
+        name
+        hobby {
+          id
+          name
+        }
+      }
+    }
+  `;
+  // const query: string = (event.body && event.body.query) ? event.body.query : `
+  //   {
+  //     test
+  //   }
+  // `;
+
+  const variables: {} = (event.body && event.body.variables) ? event.body.variables : null;
+
+  const contextValue: Context = {
+    loaders: createLoaders()
   };
 
-  callback(null, response);
+  console.log('query:', query);
+  console.log('variables:', variables);
+  console.log('contextValue:', contextValue);
 
-  // Use this code if you don't use the http event with the LAMBDA-PROXY integration
-  // callback(null, { message: 'Go Serverless v1.0! Your function executed successfully!', event });
+  const res: Response = {
+    headers: {
+      'Content-Type': 'application/json',
+      'Access-Control-Allow-Origin': '*'
+    },
+    // requestQuery: query,
+    // event,
+    // context,
+  };
+
+
+  graphql(executableSchema, query, null, contextValue, variables)
+    .then(result => {
+      firebaseApp.delete();
+      res.statusCode = 200;
+      res.body = JSON.stringify(result);
+      // console.log('callback:', callback);
+      console.log('res:', res);
+      callback(null, res);
+    })
+    .catch(err => {
+      res.statusCode = 400;
+      res.body = JSON.stringify(err);
+      callback(res);
+    });
 };
 
+export { graphqlFn };
 
-export { hello };
+
+interface Response {
+  statusCode?: number;
+  headers?: {
+    [key: string]: string;
+    'Access-Control-Allow-Origin': string;
+  };
+  body?: any;
+  requestQuery?: string;
+  event?: any;
+  context?: any;
+}

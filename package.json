@@ -9,7 +9,6 @@
     "dataloader": "^1.2.0",
     "firebase": "^3.6.0",
     "graphql": "^0.8.1",
-    "graphql-tag": "^0.1.16",
     "graphql-tools": "^0.8.1",
     "lodash": "^4.16.6"
   },
@@ -21,7 +20,7 @@
     "tsc": "tsc --outDir dest",
     "deploy:init": "npm run tsc && sls deploy -v",
     "deploy": "npm run tsc && sls deploy function -f api -l -v",
-    "test": "sls invoke -f api -l -v"
+    "test": "sls invoke -f api -l"
   },
   "repository": {
     "type": "git",

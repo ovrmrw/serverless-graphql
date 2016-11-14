@@ -1,4 +1,4 @@
-import firebase from 'firebase';
+import * as firebase from 'firebase';
 import * as lodash from 'lodash';
 // const assert = require('power-assert');
 

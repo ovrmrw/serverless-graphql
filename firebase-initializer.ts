@@ -1,4 +1,4 @@
-import firebase from 'firebase';
+import * as firebase from 'firebase';
 import * as path from 'path';
 
 
@@ -7,7 +7,7 @@ const secretJsonPath = path.join(root, 'secret.json');
 console.log('Secret JSON Path:', secretJsonPath);
 
 
-firebase.initializeApp({
+export const firebaseApp = firebase.initializeApp({
   serviceAccount: secretJsonPath,
   databaseURL: "https://graphql-e5abf.firebaseio.com",
   databaseAuthVariableOverride: {
