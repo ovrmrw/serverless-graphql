@@ -1,0 +1,37 @@
+{
+  "name": "serverless-graphql",
+  "version": "1.0.0",
+  "description": "(experimental)",
+  "main": "handler.js",
+  "dependencies": {
+    "@types/graphql": "^0.7.2",
+    "@types/lodash": "^4.14.38",
+    "dataloader": "^1.2.0",
+    "firebase": "^3.6.0",
+    "graphql": "^0.8.1",
+    "graphql-tag": "^0.1.16",
+    "graphql-tools": "^0.8.1",
+    "lodash": "^4.16.6"
+  },
+  "devDependencies": {
+    "@types/node": "^6.0.46",
+    "typescript": "^2.1.1"
+  },
+  "scripts": {
+    "tsc": "tsc --outDir dest",
+    "deploy:init": "npm run tsc && sls deploy -v",
+    "deploy": "npm run tsc && sls deploy function -f api -l -v",
+    "test": "sls invoke -f api -l -v"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ovrmrw/serverless-graphql.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ovrmrw/serverless-graphql/issues"
+  },
+  "homepage": "https://github.com/ovrmrw/serverless-graphql#readme"
+}

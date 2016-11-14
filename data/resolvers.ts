@@ -1,0 +1,44 @@
+import { GraphQLResolveInfo } from 'graphql';
+import * as lodash from 'lodash';
+
+import { User, Hobby } from './schema';
+import { getUserIdsConnector } from './firebase-connectors';
+
+
+export const resolverMap = {
+
+  RootQuery: {
+    users(root: any, args: {}, context: any, info: GraphQLResolveInfo): Promise<User[]> {
+      return getUserIdsConnector().then(ids => context.loaders.userLoader.loadMany(ids));
+    },
+
+    user(root: any, args: { id: string }, context: any, info: GraphQLResolveInfo): Promise<User[]> {
+      return context.loaders.userLoader.load(args.id);
+    },
+  },
+
+
+  User: {
+    follow(user: User, args: { first?: number }, context: any, info: GraphQLResolveInfo): Promise<User[]> | null {
+      const limit: number = args.first || 100;
+      const followIds: string[] | null = user.follow ? user.follow.slice(0, limit) : null;
+      return followIds ? context.loaders.userLoader.loadMany(followIds) : null;
+    },
+
+    hobby(user: User, args: { first?: number }, context: any, info: GraphQLResolveInfo): Promise<Hobby[]> | null {
+      const limit: number = args.first || 100;
+      const hobbyIds: string[] | null = user.hobby ? user.hobby.slice(0, limit) : null;
+      return hobbyIds ? context.loaders.hobbyLoader.loadMany(hobbyIds) : null;
+    }
+  }
+
+};
+
+
+export const resolverMap2 = {
+  RootQuery: {
+    test(root: any, args: {}, context: any, info: GraphQLResolveInfo): Promise<string> {
+      return Promise.resolve('Test is OK');
+    }
+  }
+}
