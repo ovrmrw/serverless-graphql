@@ -7,7 +7,6 @@
     "sourceMap": false,
     "strictNullChecks": true,
     "skipLibCheck": true,
-    "allowSyntheticDefaultImports": true,
     "lib": [
       "es2017",
       "dom"

@@ -1,20 +1,27 @@
-import 'core-js';
 import { graphql } from 'graphql';
 
-import { firebaseApp } from './firebase-initializer';
+// import { firebaseApp } from './firebase-initializer';
 import { executableSchema, executableSchema2, createLoaders, Context } from './data';
 
 
 
-const graphqlFn = (event, context, callback): void => {
+export async function graphqlFn(event, context, callback): Promise<void> {
   const query: string = (event.body && event.body.query) ? event.body.query : `
     {
-      user(id:1) {
+      users {
         id
         name
         hobby {
           id
           name
+        }
+        follow {
+          id
+          name
+          follow {
+            id
+            name
+          }
         }
       }
     }
@@ -37,39 +44,50 @@ const graphqlFn = (event, context, callback): void => {
 
   const res: Response = {
     headers: {
-      'Content-Type': 'application/json',
-      'Access-Control-Allow-Origin': '*'
+      // 'Access-Control-Allow-Origin': '*',
+      'Content-Encoding': 'gzip, deflate'
     },
     // requestQuery: query,
     // event,
     // context,
   };
 
-
-  graphql(executableSchema, query, null, contextValue, variables)
-    .then(result => {
-      firebaseApp.delete();
-      res.statusCode = 200;
-      res.body = JSON.stringify(result);
-      // console.log('callback:', callback);
-      console.log('res:', res);
-      callback(null, res);
-    })
-    .catch(err => {
-      res.statusCode = 400;
-      res.body = JSON.stringify(err);
-      callback(res);
-    });
+  try {
+    const result = await graphql(executableSchema, query, null, contextValue, variables);
+    res.statusCode = 200;
+    // res.body = JSON.stringify(result);
+    res.body = result;
+    console.log('res:', res);
+    callback(null, res);
+  } catch (err) {
+    res.statusCode = 400;
+    // res.body = JSON.stringify(err);
+    res.body = err;
+    console.log('res:', res);
+    callback(res);
+  }
+  // graphql(executableSchema, query, null, contextValue, variables)
+  //   .then(result => {
+  //     firebaseApp.delete();
+  //     res.statusCode = 200;
+  //     res.body = JSON.stringify(result);
+  //     // console.log('callback:', callback);
+  //     console.log('res:', res);
+  //     callback(null, res);
+  //   })
+  //   .catch(err => {
+  //     res.statusCode = 400;
+  //     res.body = JSON.stringify(err);
+  //     callback(res);
+  //   });
 };
-
-export { graphqlFn };
 
 
 interface Response {
   statusCode?: number;
   headers?: {
     [key: string]: string;
-    'Access-Control-Allow-Origin': string;
+    // 'Access-Control-Allow-Origin': string;
   };
   body?: any;
   requestQuery?: string;
